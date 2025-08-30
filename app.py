@@ -9,17 +9,18 @@ from flask import Flask, abort, flash, redirect, render_template, request, send_
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager,login_user,logout_user,login_required,current_user
-from models import Personal, db,Usuario
+from models import Personal, Unidad, db,Usuario,Rango
 from cryptography.fernet import Fernet
 import re 
 from werkzeug.utils import secure_filename
 from config import Config
+from app import db
 
 load_dotenv()
 app = Flask(__name__)
 app.config.from_object(Config)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Clave de cifrado (usa Fernet.generate_key())
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -143,6 +144,9 @@ def allowed_file(filename):
 @login_required
 def personal():
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    rangos = Rango.query.all()
+    unidades = Unidad.query.all()
+    
     if request.method == 'POST':
         nombreI=request.form.get('nombreI')
         apellidos=request.form.get('apellidos')
@@ -183,8 +187,8 @@ def personal():
         nombre_m = fernet.encrypt(nombreI.encode())
         apellidos_m = fernet.encrypt(apellidos.encode())
         identi_m = fernet.encrypt(identificacion.encode())
-        rango_m = fernet.encrypt(gradoRango.encode())
-        unidad_m = fernet.encrypt(unidad.encode())
+        rango_id = int(gradoRango)
+        unidad_id = int(unidad)
         areaVisita_m = fernet.encrypt(areaVisita.encode())
         propositoVisita_m = fernet.encrypt(propositoVisita.encode())
         fechaHora_m = fernet.encrypt(fechaHora.encode())
@@ -195,8 +199,8 @@ def personal():
             nombres=nombre_m,
             apellidos=apellidos_m,
             identificacion=identi_m,
-            rango=rango_m,
-            unidad=unidad_m,
+            rango_id=rango_id, 
+            unidad_id=unidad_id,  
             areaVisita=areaVisita_m,
             propositoVisita=propositoVisita_m,
             fecha_hora=fechaHora_m,
@@ -211,7 +215,7 @@ def personal():
         flash(f'Personal registrado con código: {codigo}' , 'success')
         return render_template('registro-personal.html', codigo_generado=codigo)
 
-    return render_template('registro-personal.html')
+    return render_template('registro-personal.html',rangos=rangos,unidades=unidades)
 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
@@ -264,7 +268,7 @@ def validacion_Identidad():
                 'nombre': fernet.decrypt(persona_validada.nombres).decode(),
                 'apellidos': fernet.decrypt(persona_validada.apellidos).decode(),
                 'identificacion': fernet.decrypt(persona_validada.identificacion).decode(),
-                'unidad': fernet.decrypt(persona_validada.unidad).decode(),
+                'unidad': p.unidad.nombre if p.unidad else 'Sin unidad',
                 'proposito': fernet.decrypt(persona_validada.propositoVisita).decode(),
                 'fecha_hora': fernet.decrypt(persona_validada.fecha_hora).decode(),
                 'firma_digital': persona_validada.firma_digital,

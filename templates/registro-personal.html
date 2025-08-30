@@ -35,13 +35,23 @@
                         </div>
                         <div class="col-md-6">
                             <label for="grado-rango" class="form-label">Grado/Rango</label>
-                            <input type="text" class="form-control" name="grado-rango" required>
+                            <select name="grado-rango" id="grado-rango" class="form-control" required>
+                                <option value="" disabled selected>Seleccione un rango</option>
+                                    {% for rango in rangos %}
+                                        <option value="{{ rango.id }}">{{ rango.nombre }}</option>
+                                    {% endfor %}    
+                            </select>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <label for="unidad" class="form-label">Unidad de Asignación</label>
-                            <input type="text" class="form-control" name="unidad" required>
+                            <select name="unidad" id="unidad" class="form-select" required>
+                                <option value="" disabled selected>Seleccione una unidad</option>
+                                {% for unidad in unidades %}
+                                    <option value="{{ unidad.id }}">{{ unidad.nombre }}</option>
+                                {% endfor %}
+                            </select>
                         </div>   
                         <div class="col-md-6">
                             <label for="areaVisita" class="form-label">Area de Visita</label>
@@ -55,7 +65,7 @@
                         </div>
                         <div class="col-md-6">
                             <label for="fechaHora" class="form-label">Fecha/Hora Ingreso</label>
-                            <input type="text" class="form-control" name="fechaHora" required>
+                            <input type="datetime-local" class="form-control" name="fechaHora" required>
                         </div>
                     </div>
                     <div class="row"> 
@@ -65,6 +75,7 @@
                                 <button type="button" class="file-input-btn">Seleccionar firma digital</button>
                                 <input type="file" class="file-input" id="firma_digital" name="firma_digital" accept="image/*">
                             </div>
+                            <span id="file-name-firma">Ningún archivo seleccionado</span>
                         </div>
                         <div class="mb-3 d-flex flex-column">
                             <label for="imagen" class="form-label">Fotografía</label>
@@ -72,7 +83,7 @@
                                 <button type="button" class="file-input-btn">Seleccionar imagen</button>
                                 <input type="file" name="imagen" id="imagen" class="file-input" accept="image/*">
                             </div>
-                            <span id="file-name">Ningún archivo seleccionado</span>
+                            <span id="file-name-imagen">Ningún archivo seleccionado</span>
                         </div>
                     </div>
                     <div class="d-grid col-md-6 justify-content-end mt-3">

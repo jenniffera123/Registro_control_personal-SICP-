@@ -1,10 +1,21 @@
- const inputFile = document.getElementById('imagen');
-  const fileNameSpan = document.getElementById('file-name');
+const inputFile = document.getElementById('imagen');
+const inputFile2 = document.getElementById('firma_digital');
 
-  inputFile.addEventListener('change', () => {
+const fileNameSpan1 = document.getElementById('file-name-imagen');
+const fileNameSpan2 = document.getElementById('file-name-firma');
+
+inputFile.addEventListener('change', () => {
     if (inputFile.files.length > 0) {
-      fileNameSpan.textContent = inputFile.files[0].name;
+      fileNameSpan1.textContent = inputFile.files[0].name;
     } else {
-      fileNameSpan.textContent = 'Ningún archivo seleccionado';
+      fileNameSpan1.textContent = 'Ningún archivo seleccionado';
     }
-  });
+});
+
+inputFile2.addEventListener('change', () => {
+    if (inputFile2.files.length > 0) {
+      fileNameSpan2.textContent = inputFile2.files[0].name;
+    } else {
+      fileNameSpan2.textContent = 'Ningún archivo seleccionado';
+    }
+});
