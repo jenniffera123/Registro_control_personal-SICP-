@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+    {% include 'index.html' %}
+    {% include 'dashboard.html' %}
+    <body class="bg-light">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <h2 class="mb-4">Validar Identidad</h2>
+
+            <form method="post" action="{{ url_for('validacion_Identidad') }}">
+                <div class="mb-3">
+                    <label for="identificacion">Identificación</label>
+                    <input type="text" class="form-control" name="identificacion" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="codigoUnico">Código único</label>
+                    <input type="text" class="form-control" id="codigoUnico" name="codigoUnico" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary" name="accion" value="identidad">Validar Identidad</button>
+            </form>
+
+            {% if personalM %}
+            <hr>
+            <h4 class="mt-4">Datos del Personal</h4>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Identificación</th>
+                        <th>Unidad</th>
+                        <th>Fecha y Hora</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in personalM %}
+                    <tr>
+                        <td>{{ p.nombre }}</td>
+                        <td>{{ p.apellidos }}</td>
+                        <td>{{ p.identificacion }}</td>
+                        <td>{{ p.unidad }}</td>
+                        <td>{{ p.fecha_hora }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <form method="post" action="{{ url_for('validacion_Identidad') }}">
+                <input type="hidden" name="codigo" value="{{ codigo }}">
+                <button type="submit" name="accion" value="proposito" class="btn btn-secondary">
+                    Validar propósito
+                </button>
+            </form>
+            {% endif %}
+
+            <!-- Mostrar el propósito de visita -->
+            {% if proposito %}
+            <div>
+                <h4 class="fw-bold">Propósito de ingreso</h4>
+                <hr>
+                <p>{{ proposito }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </body>
+</html>

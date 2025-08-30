@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+    {% include 'index.html' %}
+    <body>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">SICP</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/personal">Registro Personal</a>
+                    </li>
+                    <li class="navbar-nav">
+                        <a class="nav-link" href="/validar-identidad">Validar Identidad</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/gestion-admin">Gestión claves</a>
+                    </li>
+                </ul>
+                <span class="navbar-text">
+                    <span>{{ current_user.nombre }}<span/>
+                    <a href="{{url_for('logOut') }}" class="btn btn-danger"> Cerrar Sesión </a>
+                </span>
+                </div>
+            </div>
+        </nav>
+    </body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+    {% include 'index.html' %}
+    {% include 'dashboard.html' %}
+    <body class="bg-light">
+        <div class="container">
+            <div class="mt-5 col-md-6">
+                <form method="post">
+                    <div class="form-group">
+                        <label for="rol">ROL</label>
+                        <select class="form-control" name="rol">
+                            <option value="usuario" {% if usuario.rol == 'usuario' %}selected{% endif %}>Usuario</option>
+                            <option value="admin" {% if usuario.rol == 'admin' %}selected{% endif %}>Administrador</option>
+                            <option value="coordinador" {% if usuario.rol == 'coordinador' %}selected{% endif %}>Coordinador</option>
+                        </select>
+                    </div>
+                    <div class="d-grid justify-content-end mt-3">
+                        <button type="submit" class="btn btn-primary" >Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

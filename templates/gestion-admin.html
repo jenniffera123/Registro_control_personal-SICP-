@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+    {% include 'index.html' %}
+    {% include 'dashboard.html' %}
+    <body class="bg-light">
+        <div class="container">
+            <h3>Administración de Usuarios/Roles</h3>
+            <div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Rol</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for usuario in usuarios %}
+                        <tr>
+                            <td>{{ usuario.id }}</td>
+                            <td>{{ usuario.nombre }}</td>
+                            <td>{{ usuario.email }}</td>
+                            <td>{{ usuario.rol }}</td>
+                            <td>
+                                <div class="d-flex">
+                                    <form method="POST" action="{{ url_for('editar_usuario', id=usuario.id) }}" class="me-3">
+                                        <button type="submit" class="btn btn-warning">Editar Rol</button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('editar_contrasena', id=usuario.id) }}">
+                                        <button type="submit" name="accion" value="nuevaClave" class="btn btn-danger">Cambiar password</button>
+                                    </form>
+                                </div>                         
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

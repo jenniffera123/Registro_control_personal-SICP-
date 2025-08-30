@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    {% include 'index.html' %}
+    {% include 'dashboard.html' %}
+    <body class="bg-light">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="container mt-5">
+            <h3 class="mb-4">Registro de Personal Militar</h3>
+
+            <div class="justify-content-center">
+                <form method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="nombreI" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" name="nombreI" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="apellidos" class="form-label">Apellido</label>
+                            <input type="text" class="form-control" name="apellidos" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="identificacion" class="form-label">No identificación Militar</label>
+                            <input type="text" class="form-control" name="identificacion" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="grado-rango" class="form-label">Grado/Rango</label>
+                            <input type="text" class="form-control" name="grado-rango" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="unidad" class="form-label">Unidad de Asignación</label>
+                            <input type="text" class="form-control" name="unidad" required>
+                        </div>   
+                        <div class="col-md-6">
+                            <label for="areaVisita" class="form-label">Area de Visita</label>
+                            <input type="text" class="form-control" name="areaVisita" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="propositoVisita" class="form-label">Proposito del Ingreso</label>
+                            <input type="text" class="form-control" name="propositoVisita" required>              
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fechaHora" class="form-label">Fecha/Hora Ingreso</label>
+                            <input type="text" class="form-control" name="fechaHora" required>
+                        </div>
+                    </div>
+                    <div class="row"> 
+                        <div class="col-md-6">
+                            <label for="firma" class="form-label">Firma Digital</label>
+                            <input type="text" class="form-control" name="firma">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="fotografia" class="form-label">Fotografia</label>
+                            <input type="text" class="form-control" name="fotografia" required>
+                        </div>
+                    </div>
+                    <div class="d-grid col-md-6 justify-content-end mt-3">
+                        <button type="submit" class="btn btn-success">Registrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
