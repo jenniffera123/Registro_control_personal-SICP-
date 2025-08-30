@@ -1,0 +1,35 @@
+  .file-input-container {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+
+  .file-input-btn {
+    border: 1px solid #007bff;
+    color: white;
+    background-color: #007bff;
+    padding: 8px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .file-input-btn:hover {
+    background-color: #0056b3;
+  }
+
+  .file-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+  }
+
+  #file-name {
+    margin-left: 10px;
+    font-style: italic;
+  }

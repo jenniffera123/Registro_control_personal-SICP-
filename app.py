@@ -1,18 +1,23 @@
+from datetime import datetime
 from functools import wraps
 import os
 import secrets
+from sqlite3.dbapi2 import Timestamp
 import string
 from dotenv import load_dotenv
-from flask import Flask, abort, flash, redirect, render_template, request, url_for
+from flask import Flask, abort, flash, redirect, render_template, request, send_from_directory, url_for
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager,login_user,logout_user,login_required,current_user
 from models import Personal, db,Usuario
 from cryptography.fernet import Fernet
 import re 
+from werkzeug.utils import secure_filename
+from config import Config
+
 load_dotenv()
 app = Flask(__name__)
-
+app.config.from_object(Config)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -71,7 +76,6 @@ def validar_password(password):
     
     return None
     
-
 # Login de usuarios
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -130,10 +134,15 @@ def registro():
 def dashboard():
     return render_template('dashboard.html',current_user=current_user.nombre)
 
+# Función para verificar tipos de archivos permitidos
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
 # registro de personala
 @app.route('/personal', methods=['GET', 'POST'])
 @login_required
 def personal():
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
     if request.method == 'POST':
         nombreI=request.form.get('nombreI')
         apellidos=request.form.get('apellidos')
@@ -145,6 +154,31 @@ def personal():
         fechaHora=request.form.get('fechaHora')
         # Código único generado aleatoriamente
         codigo =  generar_codigo_seguro()
+        firma_digital = None
+        firma_digital = request.files['firma_digital']
+        # validación de si existe firma diligenciada en el form
+        if 'firma_digital' in request.files:
+            firma_digital = request.files['firma_digital']
+            if firma_digital and allowed_file(firma_digital.filename):
+                filename = secure_filename(firma_digital.filename)
+                ext = filename.rsplit('.', 1)[1].lower()
+                safe_name = secure_filename(nombreI)
+                new_filename = f"firma_{safe_name}_{timestamp}.{ext}"
+                firma_digital.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))         
+                firma_digital = new_filename 
+
+        #validación para la fotografia
+        imagen = None
+        if 'imagen' in request.files:
+            imagen = request.files['imagen']
+            if imagen and allowed_file(imagen.filename):
+                filename = secure_filename(imagen.filename)
+                ext = filename.rsplit('.', 1)[1].lower()
+                safe_name = secure_filename(nombreI)
+                new_filename = f"fotografia_{safe_name}_{timestamp}.{ext}"
+                imagen.save(os.path.join(app.config['UPLOAD_FOLDER'], new_filename))
+                imagen = new_filename
+
         # paso para cifrar los datos
         nombre_m = fernet.encrypt(nombreI.encode())
         apellidos_m = fernet.encrypt(apellidos.encode())
@@ -166,16 +200,22 @@ def personal():
             areaVisita=areaVisita_m,
             propositoVisita=propositoVisita_m,
             fecha_hora=fechaHora_m,
-            codigo_verificacion = codigo_m
+            codigo_verificacion = codigo_m,
+            firma_digital=firma_digital,
+            imagen=imagen
         )
         # Guardar en la base de datos
         db.session.add(nuevo_personal)
         db.session.commit()
 
-        flash(f'Personal registrado con código: {codigo} ,{identi_m}' , 'success')
+        flash(f'Personal registrado con código: {codigo}' , 'success')
         return render_template('registro-personal.html', codigo_generado=codigo)
 
     return render_template('registro-personal.html')
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # Validar identidad
 @app.route('/validar-identidad', methods=['GET', 'POST'])
@@ -192,7 +232,6 @@ def validacion_Identidad():
 
         personal = Personal.query.all()
         persona_validada = None
-
         for p in personal:
             try:
                 codigo_db = fernet.decrypt(p.codigo_verificacion).decode()
@@ -227,8 +266,11 @@ def validacion_Identidad():
                 'identificacion': fernet.decrypt(persona_validada.identificacion).decode(),
                 'unidad': fernet.decrypt(persona_validada.unidad).decode(),
                 'proposito': fernet.decrypt(persona_validada.propositoVisita).decode(),
-                'fecha_hora': fernet.decrypt(persona_validada.fecha_hora).decode()
+                'fecha_hora': fernet.decrypt(persona_validada.fecha_hora).decode(),
+                'firma_digital': persona_validada.firma_digital,
+                'imagen': persona_validada.imagen
             })
+            print('validar',datos_desc)
 
             if accion == 'identidad':
                 flash('Identidad verificada correctamente.', 'success')

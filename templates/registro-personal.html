@@ -17,7 +17,7 @@
             <h3 class="mb-4">Registro de Personal Militar</h3>
 
             <div class="justify-content-center">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-6">
                             <label for="nombreI" class="form-label">Nombre</label>
@@ -59,13 +59,20 @@
                         </div>
                     </div>
                     <div class="row"> 
-                        <div class="col-md-6">
-                            <label for="firma" class="form-label">Firma Digital</label>
-                            <input type="text" class="form-control" name="firma">
+                        <div class="mb-3 d-flex flex-column">
+                            <label for="firma_digital" class="form-label">Firma Digital (Opcional)</label>
+                            <div class="file-input-container">
+                                <button type="button" class="file-input-btn">Seleccionar firma digital</button>
+                                <input type="file" class="file-input" id="firma_digital" name="firma_digital" accept="image/*">
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label for="fotografia" class="form-label">Fotografia</label>
-                            <input type="text" class="form-control" name="fotografia" required>
+                        <div class="mb-3 d-flex flex-column">
+                            <label for="imagen" class="form-label">Fotografía</label>
+                            <div class="file-input-container">
+                                <button type="button" class="file-input-btn">Seleccionar imagen</button>
+                                <input type="file" name="imagen" id="imagen" class="file-input" accept="image/*">
+                            </div>
+                            <span id="file-name">Ningún archivo seleccionado</span>
                         </div>
                     </div>
                     <div class="d-grid col-md-6 justify-content-end mt-3">
@@ -74,5 +81,6 @@
                 </form>
             </div>
         </div>
+          <script src="{{ url_for('static', filename='js/file.js') }}"></script>
     </body>
 </html>

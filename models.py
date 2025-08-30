@@ -24,9 +24,11 @@ class Personal(db.Model):
     unidad = db.Column(db.LargeBinary)
     areaVisita = db.Column(db.LargeBinary)
     propositoVisita = db.Column(db.LargeBinary)
-    fecha_hora = db.Column(db.LargeBinary)
+    fecha_hora = db.Column(db.LargeBinary, nullable=False)
     codigo_verificacion = db.Column(db.LargeBinary)
-
+    # Archivos: Firma Digital e Imagen
+    firma_digital = db.Column(db.String(100), nullable=True)
+    imagen = db.Column(db.String(100), nullable=True) 
     def __repr__(self):
         return f'<Personal {self.nombres}>'
     
